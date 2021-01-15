@@ -1,0 +1,44 @@
+{
+  "builders":
+  [
+    {
+      "type": "qemu",
+      "iso_checksum": "f136639410c31008a49c57ea8963923773d0cafe2834c7e59a8dacd326c640f3",
+      "iso_checksum_type": "sha256",
+      "iso_url": "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img",
+      "disk_image": true,
+      "output_directory": "image",
+      "disk_size": 5000,
+      "format": "qcow2",
+      "disk_compression": true,
+      "headless": true,
+      "ssh_username": "ubuntu",
+      "ssh_password": "ubuntu",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "300s",
+      "vm_name": "ubuntu",
+      "use_default_display": true,
+      "net_device": "virtio-net",
+      "disk_interface": "virtio",
+      "accelerator": "kvm",
+      "qemuargs": [
+        ["-m", "2048M"],
+        ["-smp", "2"],
+        ["-fda", "cloud.img"],
+        ["-serial", "mon:stdio"]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "sudo -S -E sh -eux '{{.Path}}'",
+      "scripts": [
+        "scripts/install_deps.sh",
+        "scripts/install_docker.sh",
+        "scripts/install_kubernetes.sh",
+        "scripts/init_kubernetes.sh"
+      ],
+      "type": "shell"
+    }
+  ]
+}
