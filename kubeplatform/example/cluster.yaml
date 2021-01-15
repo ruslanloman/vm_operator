@@ -1,0 +1,8 @@
+apiVersion: cloud.org/v1
+kind: KubeCluster
+metadata:
+  name: rutest
+spec:
+  version: latest
+  worker: "1"
+  description: "Rusichenko test cluster"

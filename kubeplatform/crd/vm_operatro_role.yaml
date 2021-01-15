@@ -1,0 +1,8 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+ name: vm-operator-account
+rules:
+- apiGroups: [""]
+  resources: ["services", "endpoints", "pods", "kubeclusters", "deployments", "secrets", "configmaps"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

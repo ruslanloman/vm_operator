@@ -1,0 +1,51 @@
+apiVersion: kubevirt.io/v1alpha3
+kind: VirtualMachine
+metadata:
+  name: {{ vm_name }}
+spec:
+  running: true
+  template:
+    metadata:
+      labels: 
+        kubevirt.io/domain: {{ vm_name }}
+        kubevirt.io/os: ubuntu
+    spec:
+      domain:
+        devices:
+          disks:
+          - disk:
+              bus: virtio
+            name: rootfs
+          - disk:
+              bus: virtio
+            name: cloudinit
+        memory:
+          guest: 4096M
+        resources:
+          requests:
+            cpu: "4"
+            memory: 1024M
+          overcommitGuestOverhead: true
+      volumes:
+        - name: rootfs
+          containerDisk:
+            image: 10.96.101.175:5000/ubuntu-container-disk:18.04
+        - name: cloudinit
+          cloudInitNoCloud:
+            userData: |-
+              #cloud-config
+              chpasswd:
+                list: |
+                  ubuntu:ubuntu
+                expire: False
+            networkData: |
+              version: 2
+              ethernets:
+                # opaque ID for physical interfaces, only referred to by other stanzas
+                enp1s0:
+                  dhcp4: true
+                  nameservers:
+                    addresses: [8.8.8.8]
+#                  addresses:
+#                    - 10.0.2.15/24
+#                  gateway4: 10.0.2.1
